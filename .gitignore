@@ -1,104 +1,318 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+import pymssql
+server ="localhost:1433"    # 连接服务器地址
+user =  "wq"# 连接帐号
+password = "wq"# 连接密码
+conn = pymssql.connect(server, user, password,  "wq2017210438")  #获取连接
+cursor = conn.cursor() # 获取光标
+# 创建名称为C的表
+cursor.execute("""
+IF OBJECT_ID('c', 'U') IS NOT NULL
+    DROP TABLE c
+CREATE TABLE c (
+    cno Int,
+    cname VARCHAR(20),
+    teacher VARCHAR(20),
+)
+""")
+# 插入多行数据，初始c表数据
+cursor.executemany(
+    "INSERT INTO c VALUES (%d, %s, %s)",
+    [(1001, '大学英语', '温格'),
+     (1002, '线性代数', '穆里尼奥'),
+     (1003, '数学分析', '弗格森')])
+#cursor.execute("INSERT INTO c VALUES (%d, %s, %s)"())
+conn.commit()
+# conn.close()
+# import tkinter
+from tkinter import *
+LOG_LINE_NUM = 0
+class MY_GUI():
+    def __init__(self,init_window_name):
+        self.init_window_name = init_window_name
+    #设置窗口
+    # photo = tkinter.PhotoImage(file=r"F:\timg.gif")
+    def set_init_window(self):
+        self.init_window_name.title("学生信息查询系统")           #窗口名
+        # image = Image.open("F:im.jpg")
+        # im = ImageTk.PhotoImage(image)
+        self.init_window_name.geometry('690x570+10+10')
+        self.init_window_name["bg"] = "black"                                    #窗口背景色
+       #标签
+        self.in_data_title_label = Label(self.init_window_name, text="学生信息",font=('微软雅黑',12),fg='yellow',bg="black")
+        self.in_data_title_label.grid(row=0, column=0,padx=(4,4),pady=(0,20))
+        self.in_data_sno_label = Label(self.init_window_name, text="学号",font=('微软雅黑',10),fg='light green',bg="black")
+        self.in_data_sno_label.grid(row=1, column=0,padx=(4,4),pady=(0,5))
+        self.in_data_sna_label = Label(self.init_window_name, text="姓名",font=('微软雅黑',10),fg='light green',bg="black")
+        self.in_data_sna_label.grid(row=2, column=0,pady=(0,5))
+        self.in_data_sage_label = Label(self.init_window_name, text="年龄",font=('微软雅黑',10),fg='light green',bg="black")
+        self.in_data_sage_label.grid(row=3, column=0,pady=(0,5))
+        self.in_data_sdept_label = Label(self.init_window_name, text="专业",font=('微软雅黑',10),fg='light green',bg="black")
+        self.in_data_sdept_label.grid(row=4, column=0,pady=(0,5))
 
-# C extensions
-*.so
+        self.out_grade_label = Label(self.init_window_name, text="分数查询",font=('微软雅黑',12),fg='yellow',bg="black")
+        self.out_grade_label.grid(row=6, column=0, padx=(4, 4), pady=(50, 20))
+        self.in_sno_label = Label(self.init_window_name, text="输入学号",font=('微软雅黑',10), fg='light green',bg="black")
+        self.in_sno_label.grid(row=7, column=0, padx=(4, 4),pady=(0, 8))
+        self.out_grade1_label = Label(self.init_window_name, text="大学英语",font=('微软雅黑',10),fg='light green',bg="black")
+        self.out_grade1_label.grid(row=8, column=0, pady=(0, 5))
+        self.out_grade2_label = Label(self.init_window_name, text="线性代数",font=('微软雅黑',10),fg='light green',bg="black")
+        self.out_grade2_label.grid(row=9, column=0, pady=(0, 5))
+        self.out_grade3_label = Label(self.init_window_name, text="数学分析",font=('微软雅黑',10),fg='light green',bg="black")
+        self.out_grade3_label.grid(row=10, column=0, pady=(0, 15))
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+        self.list_title_label = Label(self.init_window_name, text="表的操作",font=('微软雅黑',12),fg='yellow', bg="black")
+        self.list_title_label.grid(row=0, column=3, padx=(60, 4), pady=(0, 15))
+        self.in_name_list_label = Label(self.init_window_name, text="表的名称",font=('微软雅黑',10), fg='light green',bg="black")
+        self.in_name_list_label.grid(row=1, column=3, padx=(90, 4), pady=(0, 5))
+        self.list_1_label = Label(self.init_window_name, text="第一列表",font=('微软雅黑',10), fg='light green',bg="black")
+        self.list_1_label.grid(row=2, column=3,padx=(90, 4), pady=(4, 5))
+        self.list_2_sage_label = Label(self.init_window_name, text="第二列表",font=('微软雅黑',10),fg='light green',bg="black")
+        self.list_2_sage_label.grid(row=3, column=3,padx=(90, 4), pady=(4, 5))
+        self.list_3_sdept_label = Label(self.init_window_name, text="第三列表",font=('微软雅黑',10),fg='light green',bg="black")
+        self.list_3_sdept_label.grid(row=4, column=3,padx=(90, 4), pady=(4, 5))
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+        self.in_data_title_label = Label(self.init_window_name, text="输入sql语句",font=('微软雅黑',12),fg='yellow', bg="black")
+        self.in_data_title_label.grid(row=6, column=3, padx=(60, 4), pady=(50, 20))
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+        self.in_data_title_label = Label(self.init_window_name, text="查询结果显示",font=('微软雅黑',12),fg='yellow', bg="black")
+        self.in_data_title_label.grid(row=9, column=3, padx=(60, 4), pady=(0, 20))
+        #输入文本框
+        self.init_data_sno_Text = Text(self.init_window_name, width=14, height=1)  #输入学号
+        self.init_data_sno_Text.grid(row=1, column=1, rowspan=1, columnspan=1,pady=(0,5))
+        self.init_data_sna_Text = Text(self.init_window_name, width=14, height=1)  # 输入学生姓名
+        self.init_data_sna_Text.grid(row=2, column=1, rowspan=1, columnspan=1,pady=(0,5))
+        self.init_data_sage_Text = Text(self.init_window_name, width=14, height=1)  # 输入学生年龄
+        self.init_data_sage_Text.grid(row=3, column=1, rowspan=1, columnspan=1,pady=(0,5))
+        self.init_data_sdept_Text = Text(self.init_window_name, width=14, height=1)  # 输入学生专业
+        self.init_data_sdept_Text.grid(row=4, column=1, rowspan=1, columnspan=1,pady=(0,10))
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
+        self.in_sno_Text = Text(self.init_window_name, width=14, height=1)  # 输入学生学号
+        self.in_sno_Text.grid(row=7, column=1, rowspan=1, columnspan=1, pady=(0, 5))
+        self.out_grade1_Text = Text(self.init_window_name, width=14, height=1)  #输出课程1的分数
+        self.out_grade1_Text.grid(row=8, column=1, rowspan=1, columnspan=1, pady=(0, 5))
+        self.out_grade2_Text = Text(self.init_window_name, width=14, height=1)  #输出课程2的分数
+        self.out_grade2_Text.grid(row=9, column=1, rowspan=1, columnspan=1, pady=(0, 5))
+        self.out_grade3_Text = Text(self.init_window_name, width=14, height=1)  #输出课程3的分数
+        self.out_grade3_Text.grid(row=10, column=1, rowspan=1, columnspan=1, pady=(0, 5))
+        self.avg_grade3_Text = Text(self.init_window_name, width=14, height=1)  # 输出avg的分数
+        self.avg_grade3_Text.grid(row=11, column=1, rowspan=1, columnspan=1, pady=(0, 5))
 
-# Translations
-*.mo
-*.pot
+        self.in_name_list_Text = Text(self.init_window_name, width=14, height=1)  #表名
+        self.in_name_list_Text.grid(row=1, column=4, rowspan=1, columnspan=1,padx=(0,10), pady=(0, 5))
+        self.list_1_Text = Text(self.init_window_name, width=14, height=1)  #第一列的名称
+        self.list_1_Text.grid(row=2, column=4, rowspan=1, columnspan=1,padx=(0,10), pady=(0, 5))
+        self.list_2_Text = Text(self.init_window_name, width=14, height=1)  #第二列的名称
+        self.list_2_Text.grid(row=3, column=4, rowspan=1, columnspan=1,padx=(0,10), pady=(0, 5))
+        self.list_3_Text = Text(self.init_window_name, width=14, height=1)  #第三列的名称
+        self.list_3_Text.grid(row=4, column=4, rowspan=1, columnspan=1,padx=(0,10), pady=(0, 5))
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
+        self.sql_go_Text = Text(self.init_window_name, width=30, height=5)  #
+        self.sql_go_Text.grid(row=6, column=4, rowspan=3, columnspan=3, pady=(30, 5))
 
-# Flask stuff:
-instance/
-.webassets-cache
+        self.sql_do_Text = Text(self.init_window_name, width=30, height=8)  # 第三列的名称
+        self.sql_do_Text.grid(row=7, column=4, rowspan=7, columnspan=3, pady=(30, 5))
+        #按钮
+        self.insert_button = Button(self.init_window_name, text="添加", font=('微软雅黑', 10), bg='#22C9C9', fg='white',command=self.insert_s_data)
+        self.insert_button.grid(row=5, column=0)
+        self.alt_button = Button(self.init_window_name, text="修改",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.alt_s_data)
+        self.alt_button.grid(row=5, column=1)
+        self.delet_button = Button(self.init_window_name, text="删除", font=('微软雅黑', 10),bg='#FF4081', fg='white', command=self.delet_s_data)
+        self.delet_button.grid(row=5, column=2,padx=(15,0))
 
-# Scrapy stuff:
-.scrapy
+        self.inq_grade_button = Button(self.init_window_name, text="查询",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.inq)
+        self.inq_grade_button.grid(row=7, column=2,pady=(0,0))
+        self.ave_grade_button = Button(self.init_window_name, text="平均分",font=('微软雅黑', 10), bg='#22C9C9', fg='white',command=self.ave)
+        self.ave_grade_button.grid(row=11, column=0,pady=(0,10))
+        self.insert_grade_button = Button(self.init_window_name, text="添加",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.insert_g_data)
+        self.insert_grade_button.grid(row=12, column=0,pady=(10,0))
+        self.alt_grade_button = Button(self.init_window_name, text="修改",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.alt_g_data)
+        self.alt_grade_button.grid(row=12, column=1,pady=(10,0))
+        self.delet_grade_button = Button(self.init_window_name, text="删除",font=('微软雅黑', 10),bg='#FF4081', fg='white', command=self.delet_g_data)
+        self.delet_grade_button.grid(row=12, column=2, pady=(10,0))
 
-# Sphinx documentation
-docs/_build/
+        self.insert_list_button = Button(self.init_window_name, text="添加表",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.insert_list)
+        self.insert_list_button.grid(row=1, column=5,padx=5 ,pady=(10, 0))
+        self.delet_list_button = Button(self.init_window_name, text="删除表",font=('微软雅黑', 10),bg='#FF4081', fg='white', command=self.delet_list)
+        self.delet_list_button.grid(row=1, column=6,padx=(25,5), pady=(10, 0))
+        self.change_list_button = Button(self.init_window_name, text="修改表",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.change_list)
+        self.change_list_button.grid(row=3, column=5,padx=5, pady=(0, 0))
+        self.alt_data_grade_button = Button(self.init_window_name, text="添数据",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.alt_data_grade_button)
+        self.alt_data_grade_button.grid(row=3, column=6,padx=(25,5), pady=(0, 0))
 
-# PyBuilder
-target/
+        self.sql_data_button = Button(self.init_window_name, text="执行sql语句",font=('微软雅黑', 10), bg='#22C9C9', fg='white',command=self.sql_go_button)
+        self.sql_data_button.grid(row=7, column=3, padx=(60, 5), pady=(0, 0))
 
-# Jupyter Notebook
-.ipynb_checkpoints
+        self.sql_select_button = Button(self.init_window_name, text="执行查询语句",font=('微软雅黑', 10), bg='#22C9C9', fg='white', command=self.sql_select_button)
+        self.sql_select_button.grid(row=10, column=3, padx=(60, 5), pady=(0, 0))
+    #功能函数
+    def insert_s_data(self):
+        src_sno = self.init_data_sno_Text.get(1.0,END).strip().replace("\n","")
+        src_sna = self.init_data_sna_Text.get(1.0, END).strip().replace("\n", "")
+        src_sage = self.init_data_sage_Text.get(1.0, END).strip().replace("\n", "")
+        src_sdept = self.init_data_sdept_Text.get(1.0, END).strip().replace("\n", "")
+        if src_sno and src_sna and src_sage and src_sdept:
+           cursor.execute("INSERT INTO s  VALUES (%d, %s,%d, %s)", (src_sno, src_sna, src_sage,src_sdept))
+           conn.commit()
+           print('添加数据成功')
+        else:
+            print('添加数据失败，请完善信息再添加')
+    def alt_s_data(self):
+        src_sno = self.init_data_sno_Text.get(1.0, END).strip().replace("\n", "")
+        src_sna = self.init_data_sna_Text.get(1.0, END).strip().replace("\n", "")
+        src_sage = self.init_data_sage_Text.get(1.0, END).strip().replace("\n", "")
+        src_sdept = self.init_data_sdept_Text.get(1.0, END).strip().replace("\n", "")
+        if src_sno and src_sna and src_sage and src_sdept:
+          cursor.execute("update s set sname='"+src_sna+ "' where sno="+src_sno)
+          cursor.execute("update s set sage=" + src_sage + " where sno=" + src_sno)
+          cursor.execute("update s set sdept='" + src_sdept + " 'where sno=" + src_sno)
+          conn.commit()
+          print('修改数据成功')
+        else:
+            print('修改数据失败，请完善信息再修改')
+    def delet_s_data(self):
+        src_sno = self.init_data_sno_Text.get(1.0, END).strip().replace("\n", "")
+        if src_sno:
+          cursor.execute("delete from s  where sno=" + src_sno)
+          conn.commit()
+          print('删除信息成功')
+        else:
+            print('删除失败，请输入要删除学生的学号')
 
-# pyenv
-.python-version
+    def inq(self):
+        self.out_grade1_Text.delete(1.0, END)
+        self.out_grade2_Text.delete(1.0, END)
+        self.out_grade3_Text.delete(1.0, END)
+        g_sno = self.in_sno_Text.get(1.0, END).strip().replace("\n", "")
+        if g_sno:
+          cursor.execute("select grade from sc where sno ='"+g_sno+"' and cno=1001")
+          g_1= cursor.fetchone()
+          self.out_grade1_Text.insert(1.0, g_1)
+          cursor.execute("select grade from sc where sno ='" + g_sno + "' and cno=1002")
+          g_2 = cursor.fetchone()
+          self.out_grade2_Text.insert(1.0, g_2)
+          cursor.execute("select grade from sc where sno ='" + g_sno + "' and cno=1003")
+          g_3 = cursor.fetchone()
+          self.out_grade3_Text.insert(1.0, g_3)
+          print('查询信息成功')
+        else:
+            print('查询信息失败，请输入要查询学生的学号')
+    def ave(self):
+        self.avg_grade3_Text.delete(1.0, END)
+        g_sno = self.in_sno_Text.get(1.0, END).strip().replace("\n", "")
+        if  g_sno:
+          cursor.execute("select grade from sc where sno ='" + g_sno + "' and cno=1001")
+          g_1 = cursor.fetchone()
+          cursor.execute("select grade from sc where sno ='" + g_sno + "' and cno=1002")
+          g_2 = cursor.fetchone()
+          cursor.execute("select grade from sc where sno ='" + g_sno + "' and cno=1003")
+          g_3 = cursor.fetchone()
+          g_a=(g_1[0]+g_2[0]+g_3[0])/3
+          self.avg_grade3_Text.insert(1.0, g_a)
+          print('查询平均分成功')
+        else:
+            print('查询平均分失败，请输入查询平均分的学生的学号')
+    def insert_g_data(self):
+        g_sno = self.in_sno_Text.get(1.0, END).strip().replace("\n", "")
+        grade1 = self.out_grade1_Text.get(1.0, END).strip().replace("\n", "")
+        grade2 = self.out_grade2_Text.get(1.0, END).strip().replace("\n", "")
+        grade3 = self.out_grade3_Text.get(1.0, END).strip().replace("\n", "")
+        if  g_sno and grade1 and grade2 and grade3:
+          # grade1 = self.out_grade1_Text.get(1.0, END).strip().replace("\n", "")
+          cursor.execute("INSERT INTO sc  VALUES (%d, %s,%d)", (1001,  g_sno,grade1 ))
+          # conn.commit()
+          # grade2 = self.out_grade2_Text.get(1.0, END).strip().replace("\n", "")
+          cursor.execute("INSERT INTO sc  VALUES (%d, %s,%d)", (1002, g_sno, grade2))
+          # conn.commit()
+          # grade3 = self.out_grade3_Text.get(1.0, END).strip().replace("\n", "")
+          cursor.execute("INSERT INTO sc  VALUES (%d, %s,%d)", (1003, g_sno, grade3))
+          conn.commit()
+          print('添加分数成功')
+        else:
+            print('添加分数失败，请完善信息')
+    def alt_g_data(self):
+        g_sno = self.in_sno_Text.get(1.0, END).strip().replace("\n", "")
+        grade1 = self.out_grade1_Text.get(1.0, END).strip().replace("\n", "")
+        grade2 = self.out_grade2_Text.get(1.0, END).strip().replace("\n", "")
+        grade3 = self.out_grade3_Text.get(1.0, END).strip().replace("\n", "")
+        if g_sno and grade1 and grade2 and grade3:
+          cursor.execute("update sc set grade='" + grade1 + "' where sno=" + g_sno+" and cno='1001'")
+          cursor.execute("update sc set grade='" + grade2 + " 'where sno=" + g_sno+" and cno='1002'")
+          cursor.execute("update sc set grade='" + grade3 + " 'where sno=" + grade3+" and cno='1003'")
+          conn.commit()
+          print('修改数据成功')
+        else:
+            print('修改数据失败，请完善信息')
+    def delet_g_data(self):
+        g_sno = self.in_sno_Text.get(1.0, END).strip().replace("\n", "")
+        if g_sno:
+          cursor.execute("delete from sc  where sno=" + g_sno)
+          conn.commit()
+          print('删除数据成功')
+        else:
+            print('删除数据失败，请输入要删除数据的学生的学号')
 
-# celery beat schedule file
-celerybeat-schedule
+    def insert_list(self):
+        name_list = self.in_name_list_Text.get(1.0, END).strip().replace("\n", "")
+        list_1 = self.list_1_Text.get(1.0, END).strip().replace("\n", "")
+        list_2 = self.list_2_Text.get(1.0, END).strip().replace("\n", "")
+        list_3= self.list_3_Text.get(1.0, END).strip().replace("\n", "")#得到文本框中内容
+        if name_list and list_1 and list_2 and list_3:
+          cursor.execute("CREATE TABLE "+name_list+"("+list_1+" VARCHAR(20) ,"+list_2+" VARCHAR(20),"+list_3+" VARCHAR(20),)")
+          conn.commit()
+          print('添加表格成功')
+        else:
+            print('添加表格失败，请完善数据')
+    def delet_list(self):
+        name_list = self.in_name_list_Text.get(1.0, END).strip().replace("\n", "")
+        if name_list:
+          cursor.execute("drop TABLE " + name_list)
+          conn.commit()
+          print('删除表格成功')
+        else:
+            print('删除表格失败，请输入删除表格的名字')
+    def change_list(self):
+        name_list = self.in_name_list_Text.get(1.0, END).strip().replace("\n", "")
+        list_1 = self.list_1_Text.get(1.0, END).strip().replace("\n", "")
+        list_2 = self.list_2_Text.get(1.0, END).strip().replace("\n", "")
+        list_3 = self.list_3_Text.get(1.0, END).strip().replace("\n", "")  # 得到文本框中内容
+        if  name_list and list_1 and  list_2 and  list_3  :
+          cursor.execute("drop TABLE " + name_list)#将原有的表删除
+          cursor.execute("CREATE TABLE "+name_list + "(" + list_1 + " VARCHAR(20) ," + list_2 + " VARCHAR(20)," + list_3 + " VARCHAR(20),)")
+          conn.commit()
+          print('修改表格成功')
+        else:
+            print('修改表格失败，请完善修改的数据')
+    def alt_data_grade_button(self):
+        name_list = self.in_name_list_Text.get(1.0, END).strip().replace("\n", "")
+        list_1 = self.list_1_Text.get(1.0, END).strip().replace("\n", "")
+        list_2 = self.list_2_Text.get(1.0, END).strip().replace("\n", "")
+        list_3 = self.list_3_Text.get(1.0, END).strip().replace("\n", "")  # 得到文本框中内容
+        if name_list and list_1 and  list_2 and list_3:
+          cursor.execute("INSERT INTO "+ name_list+"  VALUES (%d, %s, %s)",(list_1,list_2,list_3))
+          conn.commit()
+          print('添加数据成功')
+        else:
+          print('添加数据失败，请完善数据')
 
-# SageMath parsed files
-*.sage.py
+    def sql_go_button(self):
+        sql_go = self.sql_go_Text.get(1.0, END).strip().replace("\n", "")
+        print(sql_go)
+        cursor.execute(sql_go)
+        conn.commit()
+#select grade from sc where sno ='2017001'
+    def sql_select_button(self):
+        self.sql_do_Text.delete(1.0, END)
+        sql_go = self.sql_go_Text.get(1.0, END).strip().replace("\n", "")
+        cursor.execute(sql_go )
+        g_2 = cursor.fetchall()
+        print(g_2)
+        self.sql_do_Text.insert(1.0, g_2)
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
+def gui_start():
+    init_window = Tk()  #实例化出一个父窗口
+    ZMJ_PORTAL = MY_GUI(init_window)
+    # 设置根窗口默认属性
+    ZMJ_PORTAL.set_init_window()
+    init_window.mainloop()          #父窗口进入事件循环，可以理解为保持窗口运行，否则界面不展示
+gui_start()
+conn.close()
